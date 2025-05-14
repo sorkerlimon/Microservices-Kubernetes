@@ -1,0 +1,126 @@
+version: '3.8'
+
+services:
+  # Database service
+  database:
+    build: ./Database
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./Database/mysql_data:/var/lib/mysql
+      - ./Database:/app/database
+    networks:
+      - kub-network
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=kubdb
+      - MYSQL_USER=kubuser
+      - MYSQL_PASSWORD=kubpassword
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "kubuser", "-pkubpassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    container_name: kub-database
+
+  # Cache service
+  cache:
+    build: ./Cache
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./Cache/redis_data:/data
+      - ./Cache:/app/cache
+    networks:
+      - kub-network
+    # Use the redis.conf file from Dockerfile instead of command-line arguments
+    # This enables persistence with the save configuration in redis.conf
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    container_name: kub-cache
+    
+  # Kafka message broker service
+  kafka:
+    build: ./Broker
+    ports:
+      - "9092:9092"
+    volumes:
+      - ./Broker/kafka_data:/bitnami/kafka
+    networks:
+      - kub-network
+    environment:
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kub-kafka:9093
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kub-kafka:9092
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_KRAFT_CLUSTER_ID=MkU3OEVBNTcwNTJENDM2Qg
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics.sh --bootstrap-server localhost:9092 --list"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    container_name: kub-kafka
+
+  # Backend service
+  backend:
+    build: ./Backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      database:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    volumes:
+      - ./Backend:/app
+    networks:
+      - kub-network
+    environment:
+      - DATABASE_URL=mysql+pymysql://kubuser:kubpassword@kub-database:3306/kubdb
+      - REDIS_HOST=kub-cache
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - KAFKA_BROKER=kub-kafka:9092
+    restart: on-failure
+    command: >
+      bash -c "
+      echo 'Checking MySQL connection...' &&
+      python -c \"import pymysql; print('MySQL connection success: ' + str(bool(pymysql.connect(host='kub-database', port=3306, user='kubuser', password='kubpassword', database='kubdb'))))\" &&
+      echo 'Checking Redis connection...' &&
+      python -c \"import redis; print('Redis connection success: ' + str(bool(redis.Redis(host='kub-cache', port=6379, db=0).ping())))\" &&
+      echo 'Starting FastAPI application...' &&
+      uvicorn main:app --host 0.0.0.0 --port 8000
+      "
+    container_name: kub-backend
+
+  # Frontend service
+  frontend:
+    build: ./Frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    volumes:
+      - ./Frontend:/app
+      - ./Frontend/node_modules:/app/node_modules
+    networks:
+      - kub-network
+    container_name: kub-frontend
+    environment:
+      - REACT_APP_API_URL=http://kub-backend:8000
+
+networks:
+  kub-network:
+    driver: bridge 

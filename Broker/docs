@@ -1,0 +1,104 @@
+# Kafka Broker Documentation
+
+## Overview
+This directory contains the configuration for the Kafka message broker using KRaft mode. The setup allows for message passing between microservices in the Kub Project.
+
+## Docker Setup
+
+### Basic Setup
+The Kafka setup uses KRaft mode (Kafka Raft), which is the new way of running Kafka without Zookeeper:
+- Kafka runs in combined mode (broker + controller)
+- No external Zookeeper required
+- Simpler deployment and management
+
+### Testing Kafka
+To test Kafka functionality:
+```bash
+# Start the Kafka and test services
+docker-compose -f docker-compose-kafka-test.yml up
+
+# This will:
+# 1. Start Kafka in KRaft mode
+# 2. Create a test topic
+# 3. Produce 5 test messages
+# 4. Consume and display those messages
+```
+
+### Production Setup
+For production use, integrate Kafka into the main docker-compose.yml:
+```bash
+docker-compose up -d
+```
+
+## Connect to Kafka from containers
+
+### Environment Variables for Backend
+Set these environment variables in your services:
+```
+KAFKA_BROKER=kub-kafka:9092  # For Docker network-based connection
+```
+
+### Sample Code for Backend (Python)
+
+```python
+from kafka import KafkaProducer, KafkaConsumer
+import json
+import os
+
+# Producer example
+def send_message(topic, message):
+    producer = KafkaProducer(
+        bootstrap_servers=os.environ.get('KAFKA_BROKER', 'kub-kafka:9092'),
+        value_serializer=lambda v: json.dumps(v).encode('utf-8')
+    )
+    producer.send(topic, message)
+    producer.flush()
+    producer.close()
+
+# Consumer example
+def consume_messages(topic):
+    consumer = KafkaConsumer(
+        topic,
+        bootstrap_servers=os.environ.get('KAFKA_BROKER', 'kub-kafka:9092'),
+        auto_offset_reset='earliest',
+        enable_auto_commit=True,
+        group_id='my-group',
+        value_deserializer=lambda x: json.loads(x.decode('utf-8'))
+    )
+    
+    for message in consumer:
+        print(f"Received: {message.value}")
+        # Process the message here
+```
+
+## Common Kafka Commands
+
+### List Topics
+```bash
+docker exec -it kub-kafka kafka-topics.sh --list --bootstrap-server localhost:9092
+```
+
+### Create a Topic
+```bash
+docker exec -it kub-kafka kafka-topics.sh --create --topic my-topic --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1
+```
+
+### Produce Messages
+```bash
+docker exec -it kub-kafka kafka-console-producer.sh --bootstrap-server localhost:9092 --topic my-topic
+```
+
+### Consume Messages
+```bash
+docker exec -it kub-kafka kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic my-topic --from-beginning
+```
+
+## KRaft Mode Explanation
+
+Kafka 3.0+ uses KRaft mode which replaces Zookeeper with a built-in consensus protocol. Our configuration:
+
+1. **Combined Mode**: Sets `KAFKA_CFG_PROCESS_ROLES=broker,controller` to run both roles in one node
+2. **Controller Endpoint**: Configures a separate listener on port 9093 for controller traffic
+3. **Cluster ID**: Uses a unique identifier for the Kafka cluster via `KAFKA_KRAFT_CLUSTER_ID`
+
+This simplifies the architecture by removing Zookeeper while maintaining all the features of Kafka.

@@ -1,0 +1,28 @@
+2025-05-09 13:09:28,169 - main - INFO - Kafka broker configured at: kub-kafka:9092
+2025-05-09 13:09:28,610 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap-0 host=kub-kafka:9092 <connecting> [IPv4 ('172.18.0.2', 9092)]>: connecting to kub-kafka:9092 [('172.18.0.2', 9092) IPv4]
+2025-05-09 13:09:28,625 - kafka.conn - INFO - Probing node bootstrap-0 broker version
+2025-05-09 13:09:28,631 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap-0 host=kub-kafka:9092 <connecting> [IPv4 ('172.18.0.2', 9092)]>: Connection complete.
+2025-05-09 13:09:28,734 - kafka.conn - INFO - Broker version identified as 2.5.0
+2025-05-09 13:09:28,749 - kafka.conn - INFO - Set configuration api_version=(2, 5, 0) to skip auto check_version requests on startup
+2025-05-09 13:09:28,751 - kafka.coordinator.consumer - WARNING - group_id is None: disabling auto-commit.
+2025-05-09 13:09:28,754 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap-0 host=kub-kafka:9092 <connected> [IPv4 ('172.18.0.2', 9092)]>: Closing connection. 
+2025-05-09 13:09:28,762 - main - INFO - Connected to Kafka. Available topics: []
+2025-05-09 13:09:54,725 - routes.auth_routes - INFO - Retrieved existing session for user ID 1 from Redis cache
+2025-05-09 13:09:54,867 - routes.user_routes - INFO - Retrieved users list directly from database and cached with key: users:all:skip0:limit100
+2025-05-09 13:09:54,970 - routes.user_routes - INFO - Retrieved user ID 2 directly from database and cached
+2025-05-09 13:09:54,985 - routes.user_routes - INFO - Retrieved user ID 3 directly from database and cached
+2025-05-09 13:09:54,996 - routes.user_routes - INFO - Retrieved user ID 4 directly from database and cached
+2025-05-09 13:15:36,145 - routes.user_routes - INFO - Created new user with ID 6 directly in database
+2025-05-09 13:15:36,207 - routes.user_routes - INFO - Created user details for user ID 6 directly in database
+2025-05-09 13:15:36,247 - routes.user_routes - INFO - Retrieved user ID 6 directly from database and cached
+2025-05-09 13:15:36,317 - routes.user_routes - INFO - Retrieved users list directly from database and cached with key: users:all:skip0:limit100
+2025-05-09 13:15:36,456 - routes.user_routes - INFO - Retrieved user ID 5 directly from database and cached
+2025-05-09 13:15:46,107 - routes.auth_routes - INFO - Created new session for user ID 6 directly from database
+2025-05-09 13:15:46,180 - routes.user_routes - INFO - Retrieved users list from Redis cache with key: users:all:skip0:limit100
+2025-05-09 13:17:52,091 - routes.auth_routes - INFO - Retrieved existing session for user ID 6 from Redis cache
+2025-05-09 13:17:52,179 - routes.user_routes - INFO - Retrieved users list from Redis cache with key: users:all:skip0:limit100
+2025-05-09 13:17:52,235 - routes.user_routes - INFO - Retrieved user ID 2 directly from database and cached
+2025-05-09 13:17:52,238 - routes.user_routes - INFO - Retrieved user ID 1 directly from database and cached
+2025-05-09 13:17:52,244 - routes.user_routes - INFO - Retrieved user ID 3 directly from database and cached
+2025-05-09 13:17:52,262 - routes.user_routes - INFO - Retrieved user ID 4 directly from database and cached
+2025-05-09 13:17:52,319 - routes.user_routes - INFO - Retrieved user ID 5 from Redis cache

@@ -1,0 +1,15 @@
+# Build the Docker image
+docker build -t fastapi-app .
+
+# Run the container
+docker run -d -p 8000:8000 fastapi-app
+
+# Run the container with database connection
+docker run -d -p 8000:8000 --add-host=host.docker.internal:host-gateway -e DATABASE_URL=mysql+pymysql://kubuser:kubpassword@host.docker.internal:3306/kubdb fastapi-app
+
+docker run -p 8000:8000 --add-host=host.docker.internal:host-gateway -e DATABASE_URL=mysql+pymysql://kubuser:kubpassword@host.docker.internal:3306/kubdb -e REDIS_HOST=host.docker.internal -e REDIS_PORT=6379 -e REDIS_DB=0 fastapi-app
+
+docker run -p 8000:8000 -e DATABASE_URL=mysql+pymysql://kubuser:kubpassword@host.docker.internal:3306/kubdb -e REDIS_HOST=host.docker.internal -e REDIS_PORT=6379 -e REDIS_DB=0 -e REDIS_PASSWORD="" fastapi-app
+
+# Access the API documentation
+http://localhost:8000/docs

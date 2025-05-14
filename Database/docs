@@ -1,0 +1,2 @@
+docker build -t kub-database .
+docker run -d -p 3306:3306 --name kub-db kub-database

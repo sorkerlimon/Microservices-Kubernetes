@@ -1,0 +1,19 @@
+docker build -t kub-redis .
+docker run --name kub-cache -p 6379:6379 kub-redis
+docker exec -it kub-cache redis-cli
+redis-cli -h localhost -p 6379
+
+
+
+SET user:1:name "Limon"
+GET user:1:name
+DEL user:1:name
+SETEX session:123 3600 "user_session_data"
+KEYS user:*
+
+
+
+
+docker build -t kub-redis .
+docker run -d --name kub-cache -p 6379:6379 kub-redis
+docker run --name kub-cache -p 6379:6379 kub-redis
