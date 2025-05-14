@@ -26,3 +26,30 @@
 2025-05-09 13:17:52,244 - routes.user_routes - INFO - Retrieved user ID 3 directly from database and cached
 2025-05-09 13:17:52,262 - routes.user_routes - INFO - Retrieved user ID 4 directly from database and cached
 2025-05-09 13:17:52,319 - routes.user_routes - INFO - Retrieved user ID 5 from Redis cache
+2025-05-14 06:30:15,050 - main - INFO - Kafka broker configured at: kub-kafka:9092
+2025-05-14 06:30:15,727 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap-0 host=kub-kafka:9092 <connecting> [IPv4 ('172.18.0.3', 9092)]>: connecting to kub-kafka:9092 [('172.18.0.3', 9092) IPv4]
+2025-05-14 06:30:15,728 - kafka.conn - INFO - Probing node bootstrap-0 broker version
+2025-05-14 06:30:15,730 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap-0 host=kub-kafka:9092 <connecting> [IPv4 ('172.18.0.3', 9092)]>: Connection complete.
+2025-05-14 06:30:15,833 - kafka.conn - INFO - Broker version identified as 2.5.0
+2025-05-14 06:30:15,860 - kafka.conn - INFO - Set configuration api_version=(2, 5, 0) to skip auto check_version requests on startup
+2025-05-14 06:30:15,877 - kafka.coordinator.consumer - WARNING - group_id is None: disabling auto-commit.
+2025-05-14 06:30:15,916 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap-0 host=kub-kafka:9092 <connected> [IPv4 ('172.18.0.3', 9092)]>: Closing connection. 
+2025-05-14 06:30:15,925 - main - INFO - Connected to Kafka. Available topics: []
+2025-05-14 06:31:02,891 - routes.user_routes - INFO - Created new user with ID 1 directly in database
+2025-05-14 06:31:02,981 - utils.cache - INFO - Deleted cache for key: users:1
+2025-05-14 06:31:02,984 - routes.user_routes - INFO - Created user details for user ID 1 directly in database
+2025-05-14 06:31:03,035 - utils.cache - INFO - Cache miss for key: users:1
+2025-05-14 06:31:03,045 - utils.cache - INFO - Set cache for key: users:1 with expiry: 300s
+2025-05-14 06:31:03,046 - routes.user_routes - INFO - Retrieved user ID 1 directly from database and cached
+2025-05-14 06:31:03,087 - utils.cache - INFO - Cache miss for key: users:all:skip0:limit100
+2025-05-14 06:31:03,126 - utils.cache - INFO - Set cache for key: users:all:skip0:limit100 with expiry: 300s
+2025-05-14 06:31:03,127 - routes.user_routes - INFO - Retrieved users list directly from database and cached with key: users:all:skip0:limit100
+2025-05-14 06:33:49,641 - utils.cache - INFO - Cache miss for key: session:user:1
+2025-05-14 06:33:49,646 - utils.cache - INFO - Set cache for key: session:user:1 with expiry: 86400s
+2025-05-14 06:33:49,647 - routes.auth_routes - INFO - Created new session for user ID 1 directly from database
+2025-05-14 06:33:49,699 - utils.cache - INFO - Cache hit for key: users:all:skip0:limit100
+2025-05-14 06:33:49,724 - routes.user_routes - INFO - Retrieved users list from Redis cache with key: users:all:skip0:limit100
+2025-05-14 06:34:26,408 - utils.cache - INFO - Cache hit for key: session:user:1
+2025-05-14 06:34:26,411 - routes.auth_routes - INFO - Retrieved existing session for user ID 1 from Redis cache
+2025-05-14 06:34:26,450 - utils.cache - INFO - Cache hit for key: users:all:skip0:limit100
+2025-05-14 06:34:26,468 - routes.user_routes - INFO - Retrieved users list from Redis cache with key: users:all:skip0:limit100
