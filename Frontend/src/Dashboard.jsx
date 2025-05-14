@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllUsers, logoutUser } from './api';
 import { cleanCache } from './cacheService';
+import KafkaNotifications from './KafkaNotifications';
 import './App.css';
 
 function getInitials(name) {
@@ -22,6 +23,7 @@ export default function Dashboard({ user, setUser }) {
   const [activeTab, setActiveTab] = useState('users');
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedUser, setExpandedUser] = useState(null);
+  const [showKafkaStream, setShowKafkaStream] = useState(false);
 
   useEffect(() => {
     // Fetch users when component mounts
@@ -73,6 +75,10 @@ export default function Dashboard({ user, setUser }) {
     setExpandedUser(expandedUser === userId ? null : userId);
   };
 
+  const toggleKafkaStream = () => {
+    setShowKafkaStream(!showKafkaStream);
+  };
+
   return (
     <div className="kubdash-layout">
       {/* Sidebar */}
@@ -108,6 +114,14 @@ export default function Dashboard({ user, setUser }) {
           </button>
           
           <button 
+            className={`menu-item ${activeTab === 'kafka' ? 'active' : ''}`}
+            onClick={() => setActiveTab('kafka')}
+          >
+            <span className="menu-icon">📡</span>
+            <span className="menu-text">Kafka Events</span>
+          </button>
+          
+          <button 
             className="menu-item logout-button"
             onClick={handleLogout}
           >
@@ -137,6 +151,7 @@ export default function Dashboard({ user, setUser }) {
             {activeTab === 'users' && 'User Management'}
             {activeTab === 'settings' && 'Settings'}
             {activeTab === 'reports' && 'Reports'}
+            {activeTab === 'kafka' && 'Kafka Event Stream'}
           </h1>
           
           <div className="header-controls">
@@ -150,6 +165,15 @@ export default function Dashboard({ user, setUser }) {
                 />
                 <span className="search-icon">🔍</span>
               </div>
+            )}
+            
+            {activeTab === 'kafka' && (
+              <button 
+                className="stream-toggle-button" 
+                onClick={toggleKafkaStream}
+              >
+                {showKafkaStream ? 'Hide Stream' : 'Show Stream'}
+              </button>
             )}
             
             <button 
@@ -234,6 +258,18 @@ export default function Dashboard({ user, setUser }) {
           <div className="placeholder-content">
             <h2>Reports</h2>
             <p>This section is under development.</p>
+          </div>
+        )}
+        
+        {activeTab === 'kafka' && (
+          <div className="kafka-content">
+            <div className="kafka-info">
+              <h2>Kafka Event Monitoring</h2>
+              <p>This panel shows real-time Kafka events happening in the system.</p>
+              <p>When users register or update their profiles, events are published to Kafka and processed asynchronously.</p>
+              <p>The event stream below shows both the original events and their processing results.</p>
+            </div>
+            <KafkaNotifications />
           </div>
         )}
       </main>

@@ -13,8 +13,8 @@ COPY . .
 # Build the app for production
 RUN npm run build
 
-# Step 2: Serve the build with Nginx 1.23 (as requested)
-FROM nginx:1.23-alpine
+# Step 2: Serve the build with Nginx (latest stable alpine version)
+FROM nginx:stable-alpine
 
 # Copy built files from previous stage
 COPY --from=build /app/dist /usr/share/nginx/html

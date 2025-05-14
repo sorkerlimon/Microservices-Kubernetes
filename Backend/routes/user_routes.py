@@ -14,6 +14,7 @@ from schema.user import UserCreate, UserResponse, UserLogin, UserWithDetails, Us
 from utils.cache import cache_get, cache_set, cache_invalidate_pattern, cache_delete
 from auth import hash_password, verify_password
 from datetime import datetime
+import kafka_utils  # Import Kafka utilities
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +23,9 @@ router = APIRouter(
     tags=["users"],
     responses={404: {"description": "Not found"}},
 )
+
+# User events topic
+USER_EVENTS_TOPIC = "user_events"
 
 # User endpoints
 @router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
@@ -39,6 +43,26 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     
     # Invalidate users cache
     cache_invalidate_pattern("users:all:*")
+    
+    # Send user_created event to Kafka
+    try:
+        event_data = {
+            "event_type": "user_created",
+            "user_id": db_user.id,
+            "email": db_user.email,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        # Send message with user_id as the key for consistent partitioning
+        kafka_utils.send_message(
+            topic=USER_EVENTS_TOPIC,
+            message=event_data,
+            key=str(db_user.id)
+        )
+        logger.info(f"Sent user_created event to Kafka for user ID {db_user.id}")
+    except Exception as e:
+        logger.error(f"Failed to send user_created event to Kafka: {e}")
+        # Note: We continue even if Kafka message fails - this is a non-critical operation
     
     logger.info(f"Created new user with ID {db_user.id} directly in database")
     return db_user
@@ -138,6 +162,29 @@ def create_user_detail(user_id: int, detail: UserDetailCreate, db: Session = Dep
     cache_delete(f"users:{user_id}")
     cache_invalidate_pattern("users:all:*")
     cache_invalidate_pattern("user-details:*")
+    
+    # Send user_details_created event to Kafka
+    try:
+        event_data = {
+            "event_type": "user_details_created",
+            "detail_id": db_detail.id,
+            "user_id": user_id,
+            "name": db_detail.name,
+            "email": db_detail.email,
+            "phone": db_detail.phone,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        # Send message with user_id as the key for consistent partitioning
+        kafka_utils.send_message(
+            topic=USER_EVENTS_TOPIC,
+            message=event_data,
+            key=str(user_id)
+        )
+        logger.info(f"Sent user_details_created event to Kafka for user ID {user_id}")
+    except Exception as e:
+        logger.error(f"Failed to send user_details_created event to Kafka: {e}")
+        # Continue even if Kafka message fails
     
     logger.info(f"Created user details for user ID {user_id} directly in database")
     return db_detail 

@@ -71,6 +71,22 @@ services:
       start_period: 30s
     container_name: kub-kafka
 
+  # Kafdrop - Kafka Web UI
+  kafdrop:
+    image: obsidiandynamics/kafdrop:latest
+    ports:
+      - "9000:9000"
+    environment:
+      - KAFKA_BROKERCONNECT=kub-kafka:9092
+      - JVM_OPTS=-Xms32M -Xmx64M
+      - SERVER_SERVLET_CONTEXTPATH=/
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - kub-network
+    container_name: kub-kafdrop
+
   # Backend service
   backend:
     build: ./Backend

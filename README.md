@@ -11,6 +11,7 @@ Kub Project is a modern web application demonstrating a complete microservices a
 - **Database**: MySQL for persistent data storage
 - **Cache**: Redis for performance optimization
 - **Message Broker**: Kafka for asynchronous processing
+- **Kafka UI**: Kafdrop for monitoring Kafka
 
 ## Architecture
 
@@ -183,6 +184,20 @@ Kafka for asynchronous message processing with:
 - Message queuing
 - Reliable message delivery
 - Topic-based communication
+- Web UI monitoring via Kafdrop
+
+### Monitoring and Management UIs
+
+#### Kafdrop - Kafka Web UI
+Kafdrop provides a web UI for monitoring Kafka clusters:
+- View broker information
+- Browse topics and topic messages
+- View consumer groups
+- Create topics
+- View topic configuration
+- Simple message publishing for testing
+
+Access Kafdrop at: http://localhost:9000
 
 ## Technical Implementation Details
 
@@ -240,6 +255,7 @@ Each service is containerized with Docker:
    - Frontend: http://localhost:8080
    - Backend API: http://localhost:8000
    - API Documentation: http://localhost:8000/docs
+   - Kafka UI (Kafdrop): http://localhost:9000
 
 ## Service Details
 
