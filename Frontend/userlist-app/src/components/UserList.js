@@ -4,10 +4,17 @@ const UserList = () => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8000/users")
+    // Use relative path for API requests when using Ingress
+    // In development, you might need the full URL like http://localhost:8000/users
+    // In production with Ingress, use /api/users
+    fetch("/api/users")
       .then(res => res.json())
       .then(data => setUsers(data))
-      .catch(err => console.error("Error fetching users:", err));
+      .catch(err => {
+        console.error("Error fetching users:", err);
+        // Set error state to show user
+        setUsers([]);
+      });
   }, []);
 
   return (

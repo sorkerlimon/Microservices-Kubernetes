@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+data:
+  # Frontend application settings
+  NODE_ENV: "production"
+  # Backend API URL for the frontend to connect to
+  REACT_APP_API_URL: "http://backend-service:8000"
+  # Feature flags
+  REACT_APP_ENABLE_AUTH: "true"
+  REACT_APP_ENABLE_DARK_MODE: "false"
+  # Nginx configuration
+  nginx.conf: |
+    server {
+      listen 80;
+      root /usr/share/nginx/html;
+      index index.html index.htm;
+      
+      # Support React Router
+      location / {
+        try_files $uri $uri/ /index.html;
+      }
+      
+      # Proxy API requests to backend
+      location /api/ {
+        proxy_pass http://backend-service:8000/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+      }
+    }

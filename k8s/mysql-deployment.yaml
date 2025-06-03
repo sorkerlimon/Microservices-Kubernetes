@@ -16,28 +16,45 @@ spec:
       - name: mysql
         image: mysql:8.0
         env:
-        - name: MYSQL_ROOT_PASSWORD
-          value: root
         - name: MYSQL_DATABASE
           value: appdb
         - name: MYSQL_USER
           value: user
-        - name: MYSQL_PASSWORD
-          value: password
+        envFrom:
+        - secretRef:
+            name: mysql-secrets
         ports:
         - containerPort: 3306
+        resources:
+          limits:
+            cpu: "1000m"
+            memory: "1Gi"
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
         volumeMounts:
         - mountPath: /var/lib/mysql
           name: mysql-storage
+          subPath: mysql-data
         - mountPath: /docker-entrypoint-initdb.d
           name: init-script
+        livenessProbe:
+          exec:
+            command: ["mysqladmin", "ping", "-u", "root", "-proot"]
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command: ["mysqladmin", "ping", "-u", "root", "-proot"]
+          initialDelaySeconds: 5
+          periodSeconds: 2
       volumes:
       - name: mysql-storage
         persistentVolumeClaim:
           claimName: mysql-pvc
       - name: init-script
-        hostPath:
-          path: /absolute/path/to/mysql/init.sql
+        configMap:
+          name: mysql-init-script
 ---
 apiVersion: v1
 kind: Service
