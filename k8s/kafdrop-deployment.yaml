@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafdrop
+  namespace: kub-project
+spec:
+  selector:
+    matchLabels:
+      app: kafdrop
+  template:
+    metadata:
+      labels:
+        app: kafdrop
+    spec:
+      containers:
+      - name: kafdrop
+        image: obsidiandynamics/kafdrop:latest
+        env:
+        - name: KAFKA_BROKERCONNECT
+          value: "kafka:9092"
+        - name: JVM_OPTS
+          value: "-Xms32M -Xmx64M"
+        - name: SERVER_SERVLET_CONTEXTPATH
+          value: "/"
+        ports:
+        - containerPort: 9000

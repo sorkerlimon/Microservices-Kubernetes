@@ -130,3 +130,67 @@
 2025-05-14 08:23:01,023 - utils.cache - INFO - Cache miss for key: users:all:skip0:limit100
 2025-05-14 08:23:01,027 - utils.cache - INFO - Set cache for key: users:all:skip0:limit100 with expiry: 300s
 2025-05-14 08:23:01,034 - routes.user_routes - INFO - Retrieved users list directly from database and cached with key: users:all:skip0:limit100
+2025-05-26 09:41:59,836 - main - INFO - Kafka broker configured at: kub-kafka:9092
+2025-05-26 09:42:00,184 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap-0 host=kub-kafka:9092 <connecting> [IPv4 ('172.19.0.3', 9092)]>: connecting to kub-kafka:9092 [('172.19.0.3', 9092) IPv4]
+2025-05-26 09:42:00,187 - kafka.conn - INFO - Probing node bootstrap-0 broker version
+2025-05-26 09:42:00,208 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap-0 host=kub-kafka:9092 <connecting> [IPv4 ('172.19.0.3', 9092)]>: Connection complete.
+2025-05-26 09:42:00,333 - kafka.conn - INFO - Broker version identified as 2.5.0
+2025-05-26 09:42:00,339 - kafka.conn - INFO - Set configuration api_version=(2, 5, 0) to skip auto check_version requests on startup
+2025-05-26 09:42:00,344 - kafka.coordinator.consumer - WARNING - group_id is None: disabling auto-commit.
+2025-05-26 09:42:00,364 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap-0 host=kub-kafka:9092 <connected> [IPv4 ('172.19.0.3', 9092)]>: Closing connection. 
+2025-05-26 09:42:00,366 - main - INFO - Connected to Kafka. Available topics: ['user_events']
+2025-05-26 09:42:32,269 - utils.cache - INFO - Cache miss for key: session:user:1
+2025-05-26 09:42:32,283 - utils.cache - INFO - Set cache for key: session:user:1 with expiry: 86400s
+2025-05-26 09:42:32,284 - routes.auth_routes - INFO - Created new session for user ID 1 directly from database
+2025-05-26 09:42:32,394 - utils.cache - INFO - Cache miss for key: users:all:skip0:limit100
+2025-05-26 09:42:32,397 - utils.cache - INFO - Set cache for key: users:all:skip0:limit100 with expiry: 300s
+2025-05-26 09:42:32,398 - routes.user_routes - INFO - Retrieved users list directly from database and cached with key: users:all:skip0:limit100
+2025-05-26 09:42:32,433 - utils.cache - INFO - Cache miss for key: users:4
+2025-05-26 09:42:32,457 - utils.cache - INFO - Cache miss for key: users:2
+2025-05-26 09:42:32,458 - utils.cache - INFO - Set cache for key: users:4 with expiry: 300s
+2025-05-26 09:42:32,459 - utils.cache - INFO - Cache miss for key: users:3
+2025-05-26 09:42:32,468 - routes.user_routes - INFO - Retrieved user ID 4 directly from database and cached
+2025-05-26 09:42:32,499 - utils.cache - INFO - Set cache for key: users:2 with expiry: 300s
+2025-05-26 09:42:32,504 - utils.cache - INFO - Set cache for key: users:3 with expiry: 300s
+2025-05-26 09:42:32,515 - routes.user_routes - INFO - Retrieved user ID 3 directly from database and cached
+2025-05-26 09:42:32,507 - routes.user_routes - INFO - Retrieved user ID 2 directly from database and cached
+2025-05-26 09:43:41,259 - utils.cache - INFO - Invalidated 1 keys matching pattern: users:all:*
+2025-05-26 09:43:41,261 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap-0 host=kub-kafka:9092 <connecting> [IPv4 ('172.19.0.3', 9092)]>: connecting to kub-kafka:9092 [('172.19.0.3', 9092) IPv4]
+2025-05-26 09:43:41,262 - kafka.conn - INFO - Probing node bootstrap-0 broker version
+2025-05-26 09:43:41,263 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap-0 host=kub-kafka:9092 <connecting> [IPv4 ('172.19.0.3', 9092)]>: Connection complete.
+2025-05-26 09:43:41,367 - kafka.conn - INFO - Broker version identified as 2.5.0
+2025-05-26 09:43:41,367 - kafka.conn - INFO - Set configuration api_version=(2, 5, 0) to skip auto check_version requests on startup
+2025-05-26 09:43:41,370 - kafka_utils - INFO - Kafka producer created successfully
+2025-05-26 09:43:41,379 - kafka.conn - INFO - <BrokerConnection node_id=1 host=kub-kafka:9092 <connecting> [IPv4 ('172.19.0.3', 9092)]>: connecting to kub-kafka:9092 [('172.19.0.3', 9092) IPv4]
+2025-05-26 09:43:41,379 - kafka.conn - INFO - <BrokerConnection node_id=1 host=kub-kafka:9092 <connecting> [IPv4 ('172.19.0.3', 9092)]>: Connection complete.
+2025-05-26 09:43:41,380 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap-0 host=kub-kafka:9092 <connected> [IPv4 ('172.19.0.3', 9092)]>: Closing connection. 
+2025-05-26 09:43:41,433 - kafka_utils - INFO - Message sent to topic user_events, partition 0, offset 0
+2025-05-26 09:43:41,434 - kafka.producer.kafka - INFO - Closing the Kafka producer with 9223372036.0 secs timeout.
+2025-05-26 09:43:41,435 - kafka.conn - INFO - <BrokerConnection node_id=1 host=kub-kafka:9092 <connected> [IPv4 ('172.19.0.3', 9092)]>: Closing connection. 
+2025-05-26 09:43:41,438 - routes.user_routes - INFO - Sent user_created event to Kafka for user ID 5
+2025-05-26 09:43:41,438 - routes.user_routes - INFO - Created new user with ID 5 directly in database
+2025-05-26 09:43:41,512 - utils.cache - INFO - Deleted cache for key: users:5
+2025-05-26 09:43:41,514 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap-0 host=kub-kafka:9092 <connecting> [IPv4 ('172.19.0.3', 9092)]>: connecting to kub-kafka:9092 [('172.19.0.3', 9092) IPv4]
+2025-05-26 09:43:41,516 - kafka.conn - INFO - Probing node bootstrap-0 broker version
+2025-05-26 09:43:41,518 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap-0 host=kub-kafka:9092 <connecting> [IPv4 ('172.19.0.3', 9092)]>: Connection complete.
+2025-05-26 09:43:41,630 - kafka.conn - INFO - Broker version identified as 2.5.0
+2025-05-26 09:43:41,643 - kafka.conn - INFO - Set configuration api_version=(2, 5, 0) to skip auto check_version requests on startup
+2025-05-26 09:43:41,669 - kafka_utils - INFO - Kafka producer created successfully
+2025-05-26 09:43:41,678 - kafka.conn - INFO - <BrokerConnection node_id=1 host=kub-kafka:9092 <connecting> [IPv4 ('172.19.0.3', 9092)]>: connecting to kub-kafka:9092 [('172.19.0.3', 9092) IPv4]
+2025-05-26 09:43:41,681 - kafka.conn - INFO - <BrokerConnection node_id=1 host=kub-kafka:9092 <connecting> [IPv4 ('172.19.0.3', 9092)]>: Connection complete.
+2025-05-26 09:43:41,681 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap-0 host=kub-kafka:9092 <connected> [IPv4 ('172.19.0.3', 9092)]>: Closing connection. 
+2025-05-26 09:43:41,685 - kafka_utils - INFO - Message sent to topic user_events, partition 0, offset 1
+2025-05-26 09:43:41,686 - kafka.conn - INFO - <BrokerConnection node_id=1 host=kub-kafka:9092 <connected> [IPv4 ('172.19.0.3', 9092)]>: Closing connection. 
+2025-05-26 09:43:41,688 - routes.user_routes - INFO - Sent user_details_created event to Kafka for user ID 5
+2025-05-26 09:43:41,688 - routes.user_routes - INFO - Created user details for user ID 5 directly in database
+2025-05-26 09:43:41,715 - utils.cache - INFO - Cache miss for key: users:5
+2025-05-26 09:43:41,718 - utils.cache - INFO - Set cache for key: users:5 with expiry: 300s
+2025-05-26 09:43:41,719 - routes.user_routes - INFO - Retrieved user ID 5 directly from database and cached
+2025-05-26 09:43:41,749 - utils.cache - INFO - Cache miss for key: users:all:skip0:limit100
+2025-05-26 09:43:41,753 - utils.cache - INFO - Set cache for key: users:all:skip0:limit100 with expiry: 300s
+2025-05-26 09:43:41,754 - routes.user_routes - INFO - Retrieved users list directly from database and cached with key: users:all:skip0:limit100
+2025-05-26 09:44:06,228 - utils.cache - INFO - Cache miss for key: session:user:5
+2025-05-26 09:44:06,233 - utils.cache - INFO - Set cache for key: session:user:5 with expiry: 86400s
+2025-05-26 09:44:06,234 - routes.auth_routes - INFO - Created new session for user ID 5 directly from database
+2025-05-26 09:44:06,281 - utils.cache - INFO - Cache hit for key: users:all:skip0:limit100
+2025-05-26 09:44:06,285 - routes.user_routes - INFO - Retrieved users list from Redis cache with key: users:all:skip0:limit100

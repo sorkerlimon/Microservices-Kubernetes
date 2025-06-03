@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: kub-project
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: kub-backend:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DATABASE_URL
+          value: "mysql+pymysql://kubuser:$(MYSQL_PASSWORD)@mysql-0.mysql:3306/$(MYSQL_DATABASE)"
+        # Add read-only database URL for read operations
+        - name: READ_DATABASE_URL
+          value: "mysql+pymysql://kubuser:$(MYSQL_PASSWORD)@mysql-read:3306/$(MYSQL_DATABASE)"
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: kub-project-config
+              key: REDIS_HOST
+        - name: REDIS_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: kub-project-config
+              key: REDIS_PORT
+        - name: REDIS_DB
+          valueFrom:
+            configMapKeyRef:
+              name: kub-project-config
+              key: REDIS_DB
+        - name: KAFKA_BROKER
+          valueFrom:
+            configMapKeyRef:
+              name: kub-project-config
+              key: KAFKA_BROKER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: kub-project-secrets
+              key: MYSQL_PASSWORD
+        - name: MYSQL_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: kub-project-config
+              key: MYSQL_DATABASE
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
