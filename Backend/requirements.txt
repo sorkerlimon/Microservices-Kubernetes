@@ -1,12 +1,3 @@
 fastapi
 uvicorn
-sqlalchemy
-pydantic
-bcrypt
-python-multipart
-pymysql
-redis
-cryptography
-
-# Add Kafka library
-kafka-python==2.0.2
+mysql-connector-python

@@ -1,5 +1,58 @@
-Frontend/node_modules/
-Database/mysql_data
-Broker/kafka_data
-Broker/kafka_data
-Cache/redis_data
+# ====== Global ignores ======
+.DS_Store
+Thumbs.db
+ehthumbs.db
+*.swp
+*.swo
+*.bak
+*.tmp
+*.log
+*.out
+
+# ====== Git itself ======
+.git/
+.gitignore
+
+# ====== Frontend (React - userlist-app) ======
+Frontend/userlist/node_modules/
+Frontend/userlist/build/
+Frontend/userlist/.env.local
+Frontend/**/.env.*.local
+
+# ====== Backend (FastAPI - Python) ======
+Backend/__pycache__/
+Backend/*.py[cod]
+Backend/.env
+Backend/.venv/
+Backend/venv/
+Backend/env/
+Backend/instance/
+Backend/*.egg-info/
+Backend/.mypy_cache/
+Backend/.pytest_cache/
+Backend/coverage/
+Backend/htmlcov/
+
+# If using Poetry or Pipenv
+Backend/poetry.lock
+Backend/Pipfile.lock
+Backend/pip-wheel-metadata/
+
+# ====== Database (MySQL/Init scripts) ======
+
+Database/*.dump
+
+# ====== Docker and Kubernetes ======
+*.tar
+*.img
+Dockerfile.*
+k8s/*.yaml~
+k8s/*.bak
+k8s/*.tmp
+
+# ====== VSCode & editor settings ======
+.vscode/
+
+# ====== Python build artifacts ======
+dist/
+build/

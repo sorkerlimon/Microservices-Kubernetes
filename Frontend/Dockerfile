@@ -1,27 +1,34 @@
-# Step 1: Build the React app with Node.js v18 (compatible with npm v9, safe for most CI/CD)
-FROM node:18-alpine AS build
+# ---------- Stage 1: Build the React app ----------
+FROM node:20-alpine AS build
 
+# Set working directory
 WORKDIR /app
 
-# Copy package files and install dependencies
-COPY package.json package-lock.json ./
+# Copy package.json and lock file first (for caching)
+COPY userlist-app/package*.json ./userlist-app/
+WORKDIR /app/userlist-app
+
+# Install dependencies
 RUN npm install
 
-# Copy the rest of the source code
-COPY . .
+# Copy the rest of the app
+COPY userlist-app/ .
 
-# Build the app for production
+# Build the app
 RUN npm run build
 
-# Step 2: Serve the build with Nginx (latest stable alpine version)
+
+# ---------- Stage 2: Serve with Nginx ----------
 FROM nginx:stable-alpine
 
-# Copy built files from previous stage
-COPY --from=build /app/dist /usr/share/nginx/html
+# Copy build output to nginx html directory
+COPY --from=build /app/userlist-app/build /usr/share/nginx/html
 
-# Optional: Replace default nginx config with a custom one for SPA routing
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Optional: use custom Nginx config to support React routing
+COPY userlist-app/nginx.conf /etc/nginx/conf.d/default.conf
 
+# Expose port
 EXPOSE 80
 
+# Run Nginx in foreground
 CMD ["nginx", "-g", "daemon off;"]

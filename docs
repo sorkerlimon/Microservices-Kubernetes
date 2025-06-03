@@ -1,0 +1,11 @@
+minikube start
+minikube addons enable ingress
+eval $(minikube docker-env)
+docker build -t fastapi-app:latest ./backend
+docker build -t react-app:latest ./frontend
+kubectl apply -f k8s/mysql-pvc.yaml
+kubectl apply -f k8s/mysql-deployment.yaml
+kubectl apply -f k8s/backend-deployment.yaml
+kubectl apply -f k8s/frontend-deployment.yaml
+minikube service backend-service
+minikube service frontend-service
