@@ -14,9 +14,9 @@ ehthumbs.db
 .gitignore
 
 # ====== Frontend (React - userlist-app) ======
-Frontend/userlist/node_modules/
-Frontend/userlist/build/
-Frontend/userlist/.env.local
+Frontend/usermanagement/node_modules/
+Frontend/usermanagement/build/
+Frontend/usermanagement/.env.local
 Frontend/**/.env.*.local
 
 # ====== Backend (FastAPI - Python) ======

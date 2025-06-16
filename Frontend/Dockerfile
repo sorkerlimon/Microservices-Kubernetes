@@ -1,34 +1,15 @@
-# ---------- Stage 1: Build the React app ----------
-FROM node:20-alpine AS build
+# Dockerfile in parent folder
 
-# Set working directory
+FROM node:20-alpine3.21 AS builder
 WORKDIR /app
-
-# Copy package.json and lock file first (for caching)
-COPY userlist-app/package*.json ./userlist-app/
-WORKDIR /app/userlist-app
-
-# Install dependencies
+COPY usermanagement/package*.json ./
 RUN npm install
-
-# Copy the rest of the app
-COPY userlist-app/ .
-
-# Build the app
+COPY usermanagement/. .
 RUN npm run build
 
-
-# ---------- Stage 2: Serve with Nginx ----------
-FROM nginx:stable-alpine
-
-# Copy build output to nginx html directory
-COPY --from=build /app/userlist-app/build /usr/share/nginx/html
-
-# Optional: use custom Nginx config to support React routing
-COPY userlist-app/nginx.conf /etc/nginx/conf.d/default.conf
-
-# Expose port
+FROM nginx:alpine
+RUN rm -rf /usr/share/nginx/html/*
+COPY --from=builder /app/dist /usr/share/nginx/html
 EXPOSE 80
-
-# Run Nginx in foreground
 CMD ["nginx", "-g", "daemon off;"]
+
