@@ -28,20 +28,13 @@ def user_list(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["GET", "PUT", "PATCH", "DELETE"])
+@api_view(["GET", "DELETE"])
 def user_detail(request, pk):
     user = get_object_or_404(CustomUser, pk=pk)
 
     if request.method == "GET":
         serializer = CustomUserSerializer(user)
         return Response(serializer.data)
-
-    if request.method in ("PUT", "PATCH"):
-        serializer = CustomUserSerializer(user, data=request.data, partial=(request.method=="PATCH"))
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == "DELETE":
         user.delete()
@@ -64,20 +57,13 @@ def userdetails_list(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["GET", "PUT", "PATCH", "DELETE"])
+@api_view(["GET", "DELETE"])
 def userdetails_detail(request, pk):
     detail = get_object_or_404(UserDetails, pk=pk)
 
     if request.method == "GET":
         serializer = UserDetailsSerializer(detail)
         return Response(serializer.data)
-
-    if request.method in ("PUT", "PATCH"):
-        serializer = UserDetailsSerializer(detail, data=request.data, partial=(request.method=="PATCH"))
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == "DELETE":
         detail.delete()

@@ -25,4 +25,4 @@ class CustomUserAdmin(UserAdmin):
 
 @admin.register(UserDetails)
 class UserDetailsAdmin(admin.ModelAdmin):
-    list_display = ("user", "first_name", "last_name", "phone")
+    list_display = ("id","user", "first_name", "last_name", "phone")
