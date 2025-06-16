@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import CustomUser, UserDetails
 from .serializers import CustomUserSerializer, UserDetailsSerializer
+from django.contrib.auth import authenticate
 
 # Create your views here.
 
@@ -53,6 +54,23 @@ def userdetails_create_api(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@extend_schema(request=None, responses={200: 'Login success', 400: 'Invalid credentials'})
+@api_view(["POST"])
+def login_api(request):
+    """Authenticate user and return success message."""
+    email = request.data.get('email')
+    password = request.data.get('password')
+    if not email or not password:
+        return Response({'detail': 'Email and password required'}, status=status.HTTP_400_BAD_REQUEST)
+    user = authenticate(request, username=email, password=password)
+    if user is None:
+        return Response({'detail': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+    # Optionally, log the user in to create session
+    from django.contrib.auth import login as django_login
+    django_login(request, user)
+    return Response({'detail': 'Login successful'}, status=status.HTTP_200_OK)
 
 
 @extend_schema(responses=UserDetailsSerializer)
