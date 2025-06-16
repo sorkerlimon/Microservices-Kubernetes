@@ -13,12 +13,14 @@ drf-spectacular==0.28.0
 drf-spectacular-sidecar==2025.6.1
 ecdsa==0.19.1
 fastapi==0.115.12
+gunicorn==23.0.0
 h11==0.16.0
 idna==3.10
 inflection==0.5.1
 jsonschema==4.24.0
 jsonschema-specifications==2025.4.1
 mysql-connector-python==9.3.0
+packaging==25.0
 passlib==1.7.4
 pyasn1==0.6.1
 pycparser==2.22
