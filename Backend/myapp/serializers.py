@@ -35,7 +35,14 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
 
 class UserDetailsSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all())
+
     class Meta:
         model = UserDetails
         fields = ['id', 'user', 'first_name', 'last_name', 'phone', 'address']
         read_only_fields = ['id']
+
+    def validate_user(self, value):
+        if UserDetails.objects.filter(user=value).exists():
+            raise serializers.ValidationError("Details for this user already exist.")
+        return value

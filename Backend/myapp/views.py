@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from rest_framework.decorators import api_view
+from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from rest_framework import status
 from .models import CustomUser, UserDetails
@@ -12,15 +13,21 @@ def home(request):
     return render(request, 'index.html')
 
 
-# ----- User endpoints -----
+# ===== API endpoints =====
 
-@api_view(["GET", "POST"])
-def user_list(request):
-    if request.method == "GET":
-        users = CustomUser.objects.all()
-        serializer = CustomUserSerializer(users, many=True)
-        return Response(serializer.data)
+@extend_schema(responses=CustomUserSerializer(many=True))
+@api_view(["GET"])
+def user_list_api(request):
+    """Retrieve list of all users."""
+    users = CustomUser.objects.all()
+    serializer = CustomUserSerializer(users, many=True)
+    return Response(serializer.data)
 
+
+@extend_schema(request=CustomUserSerializer, responses=CustomUserSerializer)
+@api_view(["POST"])
+def user_create_api(request):
+    """Create a new user. Expected JSON: {"email": "...", "password": "..."}"""
     serializer = CustomUserSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
@@ -28,28 +35,19 @@ def user_list(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["GET", "DELETE"])
-def user_detail(request, pk):
-    user = get_object_or_404(CustomUser, pk=pk)
-
-    if request.method == "GET":
-        serializer = CustomUserSerializer(user)
-        return Response(serializer.data)
-
-    if request.method == "DELETE":
-        user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+@extend_schema(responses=UserDetailsSerializer(many=True))
+@api_view(["GET"])
+def userdetails_list_api(request):
+    """Retrieve list of all user details objects."""
+    details = UserDetails.objects.all()
+    serializer = UserDetailsSerializer(details, many=True)
+    return Response(serializer.data)
 
 
-# ----- UserDetails endpoints -----
-
-@api_view(["GET", "POST"])
-def userdetails_list(request):
-    if request.method == "GET":
-        details = UserDetails.objects.all()
-        serializer = UserDetailsSerializer(details, many=True)
-        return Response(serializer.data)
-
+@extend_schema(request=UserDetailsSerializer, responses=UserDetailsSerializer)
+@api_view(["POST"])
+def userdetails_create_api(request):
+    """Create user details for a given user_id (no duplicate). Expected JSON: {"user": 1, "first_name": ..., ...}"""
     serializer = UserDetailsSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
@@ -57,14 +55,10 @@ def userdetails_list(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["GET", "DELETE"])
-def userdetails_detail(request, pk):
-    detail = get_object_or_404(UserDetails, pk=pk)
-
-    if request.method == "GET":
-        serializer = UserDetailsSerializer(detail)
-        return Response(serializer.data)
-
-    if request.method == "DELETE":
-        detail.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+@extend_schema(responses=UserDetailsSerializer)
+@api_view(["GET"])
+def userdetails_get_api(request, user_id):
+    """Retrieve details for specific user id."""
+    detail = get_object_or_404(UserDetails, user__id=user_id)
+    serializer = UserDetailsSerializer(detail)
+    return Response(serializer.data)
