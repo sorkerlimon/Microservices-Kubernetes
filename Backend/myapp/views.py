@@ -56,7 +56,9 @@ def userdetails_create_api(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@extend_schema(request=None, responses={200: 'Login success', 400: 'Invalid credentials'})
+from .serializers import LoginSerializer
+
+@extend_schema(request=LoginSerializer, responses={200: 'Login success', 400: 'Invalid credentials'})
 @api_view(["POST"])
 def login_api(request):
     """Authenticate user and return success message."""
