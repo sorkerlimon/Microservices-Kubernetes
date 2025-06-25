@@ -2,26 +2,35 @@ import { useState } from 'react';
 import axios from 'axios';
 import './Login.css';
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000';
+const API_BASE = import.meta.env.VITE_API_BASE;
+
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPwd, setShowPwd] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
+    setLoading(true);
     setError('');
     try {
       const res = await axios.post(`${API_BASE}/api/auth/login/`, {
         email,
         password,
       });
-      console.log(res.data);
-      alert('Login successful');
+      // on success redirect
+      navigate('/dashboard');
     } catch (err) {
       setError('Invalid credentials');
+    }
+      finally {
+      setLoading(false);
     }
   };
 
@@ -32,7 +41,7 @@ export default function Login() {
         <form onSubmit={handleSubmit}>
         
         <div className="field">
-            <label>Username</label>
+            <label>Email</label>
         <input
               type="email"
           value={email}
@@ -54,7 +63,7 @@ export default function Login() {
           </span>
         </div>
         {error && <p className="error">{error}</p>}
-        <button className="btn-primary" type="submit">Log in</button>
+        <button className="btn-primary" type="submit" disabled={loading}>{loading ? 'Logging in...' : 'Log in'}</button>
         <div className="links">
           <a href="#">Forgot password?</a>
         </div>

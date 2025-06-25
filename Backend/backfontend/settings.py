@@ -46,12 +46,14 @@ INSTALLED_APPS = [
     # Third-party apps
     'rest_framework',
     'drf_spectacular',
+    'corsheaders',
 
     # Local apps
     'myapp'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -151,6 +153,9 @@ AUTH_USER_MODEL = 'myapp.CustomUser'
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
+
+# CORS
+CORS_ALLOW_ALL_ORIGINS = True
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Microservices Kube API',

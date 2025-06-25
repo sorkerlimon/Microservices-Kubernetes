@@ -8,6 +8,7 @@ click==8.2.1
 colorama==0.4.6
 cryptography==45.0.3
 Django==5.2.3
+django-cors-headers==4.7.0
 djangorestframework==3.16.0
 drf-spectacular==0.28.0
 drf-spectacular-sidecar==2025.6.1
