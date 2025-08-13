@@ -4,9 +4,6 @@
 # kind delete cluster --name kind-2
 # kind create cluster --name kub-project --config Docs/cluster_create.yml
 
-
-
-
 # # Kubernetes Commands Cheat Sheet for Kub-Project
 
 # ## Namespace Management
