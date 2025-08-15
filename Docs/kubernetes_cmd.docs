@@ -1,11 +1,25 @@
 # First run and downlaod kind and move to c drive and and create environment variable for kind
-# kind create cluster --name kind-2
-# kind get clusters
-# kind delete cluster --name kind-2
-# kind create cluster --name kub-project --config Docs/cluster_create.yml
+kind create cluster --name cka-cluster1
+kind get clusters
+kubectl get nodes
+kind delete cluster --name cka-cluster1
+kind create cluster --name cka-cluster2 --config cluster_create.yml
+kubectl cluster-info --context kind-cka-cluster1
+kubectl config get-contexts
+kubectl config use-context kind-cka-cluster1
 
-# # Kubernetes Commands Cheat Sheet for Kub-Project
+# Delete contexts
+kubectl config delete-context kind-cka-cluster1
 
+# Delete clusters
+kubectl config delete-cluster kind-cka-cluster1
+
+# Delete users
+kubectl config unset users.kind-cka-cluster1
+
+
+
+kubectl config use-context kind-cka-cluster2
 # ## Namespace Management
 # ```bash
 # # Create a namespace
