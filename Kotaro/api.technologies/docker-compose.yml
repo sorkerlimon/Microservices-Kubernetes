@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: payment-gateway-api
+    ports:
+      - "127.0.0.1:8080:80"
+    volumes:
+      - ./:/var/www/html
+      - vendor-volume-api:/var/www/html/vendor
+    env_file:
+      - .env
+    networks:
+      - payment_gateway_net_api
+
+networks:
+  payment_gateway_net_api:
+    driver: bridge
+
+volumes:
+  vendor-volume-api:  
+
