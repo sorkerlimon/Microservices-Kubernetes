@@ -1,0 +1,88 @@
+
+
+
+# ------------------------------
+# Base image: PHP 8.1 FPM
+# ------------------------------
+    FROM php:8.1-fpm
+
+    # Set working directory
+    WORKDIR /var/www/html
+    
+    # Install system dependencies, Nginx, and supervisor
+    RUN apt-get update && apt-get install -y \
+        nginx \
+        git \
+        curl \
+        libpng-dev \
+        libonig-dev \
+        libxml2-dev \
+        zip \
+        unzip \
+        libzip-dev \
+        supervisor \
+        && docker-php-ext-configure zip \
+        && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip \
+        && rm -rf /var/lib/apt/lists/*
+    
+    # Install Composer
+    COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+    
+    # Copy Laravel application
+    COPY . .
+    
+    # Optimize Composer for production
+    RUN git config --global --add safe.directory /var/www/html && \
+        composer install --no-dev --optimize-autoloader --no-scripts && \
+        composer dump-autoload --optimize --no-scripts
+    
+    # Set permissions
+    RUN chown -R www-data:www-data /var/www/html \
+        && chmod -R 755 /var/www/html \
+        && chmod -R 777 storage bootstrap/cache
+    
+    # Copy entrypoint script
+    COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+    RUN sed -i 's/\r$//' /usr/local/bin/entrypoint.sh \
+        && chmod +x /usr/local/bin/entrypoint.sh
+    
+    # Configure Nginx (inline, no external file)
+    RUN echo 'server {\n\
+        listen 80;\n\
+        root /var/www/html/public;\n\
+        index index.php index.html;\n\
+        server_name _;\n\
+    \n\
+        location / {\n\
+            try_files $uri $uri/ /index.php?$query_string;\n\
+        }\n\
+    \n\
+        location ~ \.php$ {\n\
+            include fastcgi_params;\n\
+            fastcgi_pass 127.0.0.1:9000;\n\
+            fastcgi_index index.php;\n\
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;\n\
+        }\n\
+    \n\
+        location ~ /\.ht {\n\
+            deny all;\n\
+        }\n\
+    }' > /etc/nginx/sites-available/default
+    
+    # Configure Supervisor to run both Nginx & PHP-FPM
+    RUN echo '[supervisord]\n\
+    nodaemon=true\n\
+    [program:php-fpm]\n\
+    command=docker-php-entrypoint php-fpm\n\
+    [program:nginx]\n\
+    command=nginx -g "daemon off;"\n' > /etc/supervisor/conf.d/supervisord.conf
+    
+    # Expose HTTP port
+    EXPOSE 80
+    
+    # Entrypoint
+    ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+    
+    # Start Supervisor to run both services
+    CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+    
