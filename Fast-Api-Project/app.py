@@ -41,7 +41,7 @@ async def root():
     </head>
     <body>
         <div class="container">
-            <h1>Hello Argo CD</h1>
+            <h1>Hello Argo CD Updated</h1>
         </div>
     </body>
     </html>
