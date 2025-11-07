@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: fastapi
-        image: mdlimon/fastapi:latest
+        image: mdlimon/fastapi-app:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
