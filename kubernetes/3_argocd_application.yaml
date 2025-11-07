@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fastapi-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/sorkerlimon/Microservices-Kubernetes.git
+    targetRevision: argocd
+    path: kubernetes
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fastapi-project
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+
