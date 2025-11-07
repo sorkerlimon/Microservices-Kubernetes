@@ -38,8 +38,6 @@ jobs:
         with:
           images: ${{ secrets.DOCKERHUB_USERNAME }}/fastapi-app
           tags: |
-            type=ref,event=branch
-            type=sha,format=short
             type=raw,value=latest
 
       - name: Build and push Docker image
