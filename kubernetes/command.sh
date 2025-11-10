@@ -140,3 +140,18 @@ docker push mdlimon/fastapi-app:latest
 
 kubectl rollout restart deployment/fastapi-app -n fastapi-project
 kubectl rollout status deployment/fastapi-app -n fastapi-project
+
+# Build, tag with git SHA, push, and update deployment (recommended for automatic updates)
+# WINDOWS POWERSHELL EXAMPLE:
+# $sha = git rev-parse --short HEAD
+# docker build -t mdlimon/fastapi-app:sha-$sha ./Fast-Api-Project
+# docker push mdlimon/fastapi-app:sha-$sha
+# kubectl set image deployment/fastapi-app fastapi=mdlimon/fastapi-app:sha-$sha -n fastapi-project
+# kubectl rollout status deployment/fastapi-app -n fastapi-project
+
+# BASH EXAMPLE:
+# SHA=$(git rev-parse --short HEAD)
+# docker build -t mdlimon/fastapi-app:sha-$SHA ./Fast-Api-Project
+# docker push mdlimon/fastapi-app:sha-$SHA
+# kubectl set image deployment/fastapi-app fastapi=mdlimon/fastapi-app:sha-$SHA -n fastapi-project
+# kubectl rollout status deployment/fastapi-app -n fastapi-project
