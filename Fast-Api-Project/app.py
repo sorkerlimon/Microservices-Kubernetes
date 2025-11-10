@@ -42,6 +42,7 @@ async def root():
     <body>
         <div class="container">
             <h1>Hello Argo CD Updated by -- sorker limon</h1>
+            <p style="margin-top: 1rem; font-size: 1.25rem;">Last manual update check: 2025-11-10</p>
         </div>
     </body>
     </html>
