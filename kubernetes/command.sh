@@ -1,3 +1,7 @@
+
+kind create cluster --name cka-cluster1
+kubectl config use-context kind-cka-cluster1
+
 # Apply namespace
 kubectl apply -f kubernetes/1_namespace.yaml
 # Set default namespace for current context
@@ -56,6 +60,7 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 
 # Retrieve initial admin password powershell command
 powershell -Command "$pwd = kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath='{.data.password}'; [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($pwd))"
+
 # Login to Argo CD CLI (optional, requires argocd CLI installed)
 argocd login localhost:8080 --username admin --password <password> --insecure
 
@@ -127,3 +132,11 @@ kubectl get pods -n fastapi-project -w
 
 
 
+
+
+# local deployment command 
+docker build -t mdlimon/fastapi-app:latest ./Fast-Api-Project
+docker push mdlimon/fastapi-app:latest
+
+kubectl rollout restart deployment/fastapi-app -n fastapi-project
+kubectl rollout status deployment/fastapi-app -n fastapi-project
