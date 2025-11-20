@@ -1,17 +1,17 @@
-name: FastAPI Docker CI
+name: Weather Docker CI
 
 on:
   push:
     branches:
-      - argocd
+      - flask-kube
     paths:
-      - 'Fast-Api-Project/**'
+      - 'weather/**'
       - '.github/workflows/fastapi-docker.yml'
   pull_request:
     branches:
-      - argocd
+      - weather
     paths:
-      - 'Fast-Api-Project/**'
+      - 'weather/**'
 
 jobs:
   build-and-push:
@@ -36,15 +36,15 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/fastapi-app
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/weather-app
           tags: |
-            type=raw,value=latest
+            type=raw,value=v1
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./Fast-Api-Project
-          file: ./Fast-Api-Project/Dockerfile
+          context: ./weather
+          file: ./weather/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
