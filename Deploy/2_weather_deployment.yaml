@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: weather
-        image: mdlimon/weather-app:20251120-065152
+        image: mdlimon/weather-app:20251120-070353
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
