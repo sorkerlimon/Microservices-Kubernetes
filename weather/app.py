@@ -17,7 +17,7 @@ def get_weather():
         city_input = request.form.get('city', '').strip()
         
         if not city_input:
-            return jsonify({'error': 'Please enter a city name'}), 400
+            return jsonify({'error': 'Please enter a  city name'}), 400
         
         # Get weather data directly using city name (works with free tier)
         weather_params = {
