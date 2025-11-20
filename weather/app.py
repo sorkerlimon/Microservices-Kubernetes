@@ -1,11 +1,10 @@
 from flask import Flask, render_template, request, jsonify
 import requests
-import os
 
 app = Flask(__name__)
 
 # OpenWeatherMap API configuration
-API_KEY = "a7608bfe258027d7c46a9f2e14d6daf2"
+API_KEY = "b1f493b18beb65a86fe7181790975612"
 WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather"
 
 @app.route('/')
