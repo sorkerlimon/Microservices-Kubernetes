@@ -6,7 +6,7 @@ on:
       - flask-kube
     paths:
       - 'weather/**'
-      - '.github/workflows/fastapi-docker.yml'
+      - '.github/workflows/main.yml'
   pull_request:
     branches:
       - weather
