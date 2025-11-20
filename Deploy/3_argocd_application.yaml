@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/sorkerlimon/Microservices-Kubernetes.git
-    targetRevision: argocd
+    targetRevision: flask-kube
     path: Deploy
   destination:
     server: https://kubernetes.default.svc

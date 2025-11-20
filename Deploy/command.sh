@@ -96,10 +96,10 @@ kubectl logs -f deployment/argocd-repo-server -n argocd
 # Check Argo CD Server logs (shows API/UI operations)
 kubectl logs -f deployment/argocd-server -n argocd
 
-# Check if FastAPI app pods are created
+# Check if weather app pods are created
 kubectl get pods -n weather-project
 
-# Check FastAPI app logs
+# Check weather app logs
 kubectl logs -f deployment/weather-app -n weather-project
 
 # Watch Application status in real-time
@@ -133,8 +133,8 @@ kubectl get pods -n weather-project -w
 
 # Or create Argo CD Application via CLI (if you have Git repo)
 # argocd app create weather-app \
-#   --repo https://github.com/your-username/your-repo.git \
-#   --path kubernetes \
+#   --repo https://github.com/sorkerlimon/Microservices-Kubernetes.git \
+#   --path Deploy \
 #   --dest-server https://kubernetes.default.svc \
 #   --dest-namespace weather-project \
 #   --sync-policy automated \
@@ -155,14 +155,14 @@ kubectl rollout status deployment/weather-app -n weather-project
 # Build, tag with git SHA, push, and update deployment (recommended for automatic updates)
 # WINDOWS POWERSHELL EXAMPLE:
 # $sha = git rev-parse --short HEAD
-# docker build -t mdlimon/fastapi-app:sha-$sha ./Fast-Api-Project
-# docker push mdlimon/fastapi-app:sha-$sha
+# docker build -t mdlimon/weather-app:sha-$sha ./weather
+# docker push mdlimon/weather-app:sha-$sha
 # kubectl set image deployment/weather-app weather=mdlimon/weather-app:sha-$sha -n weather-project
-# kubectl rollout status deployment/fastapi-app -n fastapi-project
+# kubectl rollout status deployment/weather-app -n weather-project
 
 # BASH EXAMPLE:
 # SHA=$(git rev-parse --short HEAD)
-# docker build -t mdlimon/fastapi-app:sha-$SHA ./Fast-Api-Project
-# docker push mdlimon/fastapi-app:sha-$SHA
-# kubectl set image deployment/fastapi-app fastapi=mdlimon/fastapi-app:sha-$SHA -n fastapi-project
-# kubectl rollout status deployment/fastapi-app -n fastapi-project
+# docker build -t mdlimon/weather-app:sha-$SHA ./weather
+# docker push mdlimon/weather-app:sha-$SHA
+# kubectl set image deployment/weather-app weather=mdlimon/weather-app:sha-$SHA -n weather-project
+# kubectl rollout status deployment/weather-app -n weather-project
