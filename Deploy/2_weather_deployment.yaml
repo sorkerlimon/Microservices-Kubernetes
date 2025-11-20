@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fastapi-app
-  namespace: fastapi-project
+  name: weather-app
+  namespace: weather-project
   labels:
-    app: fastapi-app
+    app: weather-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: fastapi-app
+      app: weather-app
   template:
     metadata:
       labels:
-        app: fastapi-app
+        app: weather-app
     spec:
       containers:
-      - name: fastapi
-        image: mdlimon/fastapi-app:latest
+      - name: weather
+        image: mdlimon/weather-app:20251120-065152
         imagePullPolicy: Always
         ports:
-        - containerPort: 8000
+        - containerPort: 5000
           name: http
         resources:
           requests:
@@ -31,14 +31,14 @@ spec:
             cpu: "200m"
         livenessProbe:
           httpGet:
-            path: /health
-            port: 8000
+            path: /
+            port: 5000
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
           httpGet:
-            path: /health
-            port: 8000
+            path: /
+            port: 5000
           initialDelaySeconds: 5
           periodSeconds: 5
 

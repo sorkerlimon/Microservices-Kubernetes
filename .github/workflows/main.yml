@@ -17,7 +17,7 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -53,3 +53,18 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "${{ secrets.GH_USERNAME }}"
+          git config --global user.email "${{ secrets.GH_USERNAME }}@users.noreply.github.com"
+
+      - name: Update deployment YAML with new tag
+        run: |
+          sed -i "s|image: mdlimon/weather-app:.*|image: mdlimon/weather-app:${{ steps.datetime.outputs.tag }}|g" Deploy/2_weather_deployment.yaml
+
+      - name: Commit and push changes
+        run: |
+          git add Deploy/2_weather_deployment.yaml
+          git diff --staged --quiet || git commit -m "Update weather-app image tag to ${{ steps.datetime.outputs.tag }}"
+          git push https://${{ secrets.GH_USERNAME }}:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
