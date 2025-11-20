@@ -1,34 +1,45 @@
 
-kind create cluster --name cka-cluster1
-kubectl config use-context kind-cka-cluster1
+kind create cluster --name weather-cluster1
+kubectl config use-context kind-weather-cluster1
 
 # Apply namespace
-kubectl apply -f kubernetes/1_namespace.yaml
+kubectl apply -f Deploy/1_namespace.yaml
 # Set default namespace for current context
-kubectl config set-context --current --namespace=fastapi-project
+kubectl config set-context --current --namespace=weather-project
 # Apply deployment
-kubectl apply -f kubernetes/2_fast_api_deployment.yaml
+kubectl apply -f Deploy/2_weather_deployment.yaml
 
-kubectl logs -f deployment/fastapi-app -n fastapi-project
+kubectl logs -f deployment/weather-app -n weather-project
 
 
 # Check status
-kubectl get all -n fastapi-project
+kubectl get all -n weather-project
 
 # Port forward to access the app
-kubectl port-forward deployment/fastapi-app 8000:8000 -n fastapi-project
+kubectl port-forward deployment/weather-app 5000:5000 -n weather-project
 
 # --- Argo CD Local Deployment ---
 
 # Create argocd namespace
 kubectl create namespace argocd
+#kubectl config set-context --current --namespace=argocd
+
+kubectl get namespaces
+
+kubectl get pods -n argocd
+
+kubectl get deployments -n argocd
+
+kubectl get statefulsets -n argocd
+
+kubectl get services -n argocd
 
 
 # Alternative: Install Argo CD (using remote URL)
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
 # Install Argo CD (using local YAML file) - MUST BE DONE FIRST to install CRDs
-kubectl apply -n argocd -f kubernetes/3_argocd_application.yaml
+kubectl apply -n argocd -f Deploy/3_argocd_application.yaml
 
 
 # Wait for Argo CD components to be ready
@@ -65,16 +76,16 @@ powershell -Command "$pwd = kubectl get secret argocd-initial-admin-secret -n ar
 argocd login localhost:8080 --username admin --password <password> --insecure
 
 # Apply Argo CD Application (AFTER Argo CD is installed and running)
-kubectl apply -f kubernetes/3_argocd_application.yaml
+kubectl apply -f Deploy/3_argocd_application.yaml
 
 # Check Argo CD Application status
 kubectl get applications -n argocd
 
 # Get detailed Application status
-kubectl get application fastapi-app -n argocd -o yaml
+kubectl get application weather-app -n argocd -o yaml
 
 # Check Application sync status
-kubectl describe application fastapi-app -n argocd
+kubectl describe application weather-app -n argocd
 
 # Check Argo CD Application Controller logs (shows sync operations)
 kubectl logs -f statefulset/argocd-application-controller -n argocd
@@ -86,10 +97,10 @@ kubectl logs -f deployment/argocd-repo-server -n argocd
 kubectl logs -f deployment/argocd-server -n argocd
 
 # Check if FastAPI app pods are created
-kubectl get pods -n fastapi-project
+kubectl get pods -n weather-project
 
 # Check FastAPI app logs
-kubectl logs -f deployment/fastapi-app -n fastapi-project
+kubectl logs -f deployment/weather-app -n weather-project
 
 # Watch Application status in real-time
 kubectl get applications -n argocd -w
@@ -100,32 +111,32 @@ kubectl get applications -n argocd -w
 # If you updated Git repo, Argo CD will auto-sync (if automated sync is enabled)
 
 # Method 2: Manual sync via kubectl (patch to trigger sync)
-kubectl patch application fastapi-app -n argocd --type merge -p '{"operation":{"initiatedBy":{"username":"admin"},"sync":{"revision":"argocd"}}}'
+kubectl patch application weather-app -n argocd --type merge -p '{"operation":{"initiatedBy":{"username":"admin"},"sync":{"revision":"argocd"}}}'
 
 # Method 3: Delete and recreate Application (forces full resync)
-# kubectl delete application fastapi-app -n argocd
-# kubectl apply -f kubernetes/3_argocd_application.yaml
+# kubectl delete application weather-app -n argocd
+# kubectl apply -f Deploy/3_argocd_application.yaml
 
 # Method 4: Restart Argo CD Application Controller (forces resync of all apps)
 # kubectl rollout restart statefulset/argocd-application-controller -n argocd
 
 # Method 5: Using Argo CD CLI (if installed)
-# argocd app sync fastapi-app
-# argocd app sync fastapi-app --force
+# argocd app sync weather-app
+# argocd app sync weather-app --force
 
 # Check sync status after redeploy
-kubectl get application fastapi-app -n argocd
-kubectl describe application fastapi-app -n argocd
+kubectl get application weather-app -n argocd
+kubectl describe application weather-app -n argocd
 
 # Check if pods are being recreated
-kubectl get pods -n fastapi-project -w
+kubectl get pods -n weather-project -w
 
 # Or create Argo CD Application via CLI (if you have Git repo)
-# argocd app create fastapi-app \
+# argocd app create weather-app \
 #   --repo https://github.com/your-username/your-repo.git \
 #   --path kubernetes \
 #   --dest-server https://kubernetes.default.svc \
-#   --dest-namespace fastapi-project \
+#   --dest-namespace weather-project \
 #   --sync-policy automated \
 #   --auto-prune \
 #   --self-heal
@@ -135,18 +146,18 @@ kubectl get pods -n fastapi-project -w
 
 
 # local deployment command 
-docker build -t mdlimon/fastapi-app:latest ./Fast-Api-Project
-docker push mdlimon/fastapi-app:latest
+docker build -t mdlimon/weather-app:latest ./weather
+docker push mdlimon/weather-app:latest
 
-kubectl rollout restart deployment/fastapi-app -n fastapi-project
-kubectl rollout status deployment/fastapi-app -n fastapi-project
+kubectl rollout restart deployment/weather-app -n weather-project
+kubectl rollout status deployment/weather-app -n weather-project
 
 # Build, tag with git SHA, push, and update deployment (recommended for automatic updates)
 # WINDOWS POWERSHELL EXAMPLE:
 # $sha = git rev-parse --short HEAD
 # docker build -t mdlimon/fastapi-app:sha-$sha ./Fast-Api-Project
 # docker push mdlimon/fastapi-app:sha-$sha
-# kubectl set image deployment/fastapi-app fastapi=mdlimon/fastapi-app:sha-$sha -n fastapi-project
+# kubectl set image deployment/weather-app weather=mdlimon/weather-app:sha-$sha -n weather-project
 # kubectl rollout status deployment/fastapi-app -n fastapi-project
 
 # BASH EXAMPLE:

@@ -1,25 +1,25 @@
 # First run and downlaod kind and move to c drive and and create environment variable for kind
-kind create cluster --name cka-cluster1
+kind create cluster --name weather-cluster1
 kind get clusters
 kubectl get nodes
-kind delete cluster --name cka-cluster1
-kind create cluster --name cka-cluster2 --config cluster_create.yml
-kubectl cluster-info --context kind-cka-cluster1
+kind delete cluster --name weather-cluster1
+kind create cluster --name weather-cluster2 --config cluster_create.yml
+kubectl cluster-info --context kind-weather-cluster1
 kubectl config get-contexts
-kubectl config use-context kind-cka-cluster1
+kubectl config use-context kind-weather-cluster1
 
 # Delete contexts
-kubectl config delete-context kind-cka-cluster1
+kubectl config delete-context kind-weather-cluster1
 
 # Delete clusters
-kubectl config delete-cluster kind-cka-cluster1
+kubectl config delete-cluster kind-weather-cluster1
 
 # Delete users
-kubectl config unset users.kind-cka-cluster1
+kubectl config unset users.kind-weather-cluster1
 
 
 
-kubectl config use-context kind-cka-cluster2
+kubectl config use-context kind-weather-cluster2
 # ## Namespace Management
 # ```bash
 # # Create a namespace
