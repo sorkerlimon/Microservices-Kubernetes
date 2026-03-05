@@ -1,15 +1,15 @@
 # First run and downlaod kind and move to c drive and and create environment variable for kind
-kind create cluster --name weather-cluster1
+kind create cluster --name helm-cluster1
 kind get clusters
 kubectl get nodes
-kind delete cluster --name weather-cluster1
-kind create cluster --name weather-cluster2 --config cluster_create.yml
-kubectl cluster-info --context kind-weather-cluster1
+kind delete cluster --name helm-cluster1
+kind create cluster --name helm-cluster1 --config cluster_create.yml
+kubectl cluster-info --context kind-helm-cluster1
 kubectl config get-contexts
-kubectl config use-context kind-weather-cluster1
+kubectl config use-context kind-helm-cluster1
 
 # Delete contexts
-kubectl config delete-context kind-weather-cluster1
+kubectl config delete-context kind-helm-cluster1
 
 # Delete clusters
 kubectl config delete-cluster kind-weather-cluster1
@@ -262,3 +262,45 @@ kubectl config use-context kind-weather-cluster2
 # # 7. Check deployment status
 # kubectl get all -n kub-project
 # ```
+
+
+
+# --- Helm: Run / Install ---
+
+# Add Argo Helm repo and update
+helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+
+# Create argocd namespace and install Argo CD
+kubectl create namespace argocd
+helm install argocd argo/argo-cd -n argocd
+
+# Optional: install argocd-apps (Application definitions; use with values for apps)
+# helm install my-argocd-apps argo/argocd-apps --version 2.0.4 -n default
+
+# List all Helm releases (all namespaces)
+helm list -A
+
+# List releases in argocd namespace
+helm list -n argocd
+
+# Check release status and get manifest/values
+helm status argocd -n argocd
+helm get manifest argocd -n argocd
+helm get values argocd -n argocd
+
+# Argo CD UI: get admin password, then port-forward
+# kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+# kubectl port-forward svc/argocd-server -n argocd 8080:443
+
+# --- Helm: Delete / Uninstall ---
+
+# Uninstall Helm releases (order: apps first, then Argo CD)
+helm uninstall my-argocd-apps -n default
+helm uninstall argocd -n argocd
+
+# Optional: remove argocd namespace after uninstall
+# kubectl delete namespace argocd
+
+# Verify no Helm releases left
+helm list -A
