@@ -6,23 +6,35 @@ import pymysql
 from contextlib import contextmanager
 from typing import Optional
 
-# Optional: use MySQL when env is set
-MYSQL_HOST = "192.168.50.89"
-MYSQL_PORT = int(3306)
-MYSQL_USER = "app_user"
-MYSQL_PASSWORD = "changeme"
-MYSQL_DATABASE = "app_db"
+# MySQL settings (read strictly from env)
+# If `MYSQL_HOST` is empty/unset, the app falls back to in-memory storage.
+MYSQL_HOST = os.getenv("MYSQL_HOST")
+MYSQL_PORT = os.getenv("MYSQL_PORT")
+MYSQL_USER = os.getenv("MYSQL_USER")
+MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD")
+MYSQL_DATABASE = os.getenv("MYSQL_DATABASE")
 
 
 def use_mysql() -> bool:
-    return bool(MYSQL_HOST)
+    return bool(MYSQL_HOST and MYSQL_HOST.strip())
 
 
 @contextmanager
 def get_connection():
+    missing: list[str] = []
+    if not MYSQL_PORT:
+        missing.append("MYSQL_PORT")
+    if not MYSQL_USER:
+        missing.append("MYSQL_USER")
+    if MYSQL_PASSWORD is None:
+        missing.append("MYSQL_PASSWORD")
+    if not MYSQL_DATABASE:
+        missing.append("MYSQL_DATABASE")
+    if missing:
+        raise RuntimeError(f"Missing MySQL env vars when MYSQL_HOST is set: {', '.join(missing)}")
     conn = pymysql.connect(
         host=MYSQL_HOST,
-        port=MYSQL_PORT,
+        port=int(MYSQL_PORT),
         user=MYSQL_USER,
         password=MYSQL_PASSWORD,
         database=MYSQL_DATABASE,
