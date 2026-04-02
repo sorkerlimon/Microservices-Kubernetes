@@ -9,6 +9,9 @@ spec:
     repoURL: https://github.com/sorkerlimon/Microservices-Kubernetes.git
     targetRevision: aws_kub
     path: deployment/development
+    directory:
+      recurse: true
+      exclude: cluster_create.yml
   destination:
     server: https://kubernetes.default.svc
     namespace: dev-project
@@ -18,3 +21,4 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      
