@@ -1,17 +1,17 @@
-name: Weather Docker CI
+name: Basic Docker CI
 
 on:
   push:
     branches:
       - flask-kube
     paths:
-      - 'weather/**'
+      - 'application/**'
       - '.github/workflows/main.yml'
   pull_request:
     branches:
-      - weather
+      - basic
     paths:
-      - 'weather/**'
+      - 'application/**'
 
 jobs:
   build-and-push:
@@ -41,15 +41,15 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: mdlimon/weather-app
+          images: mdlimon/basic-app
           tags: |
             type=raw,value=${{ steps.datetime.outputs.tag }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./weather
-          file: ./weather/Dockerfile
+          context: ./application
+          file: ./application/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -61,10 +61,10 @@ jobs:
 
       - name: Update deployment YAML with new tag
         run: |
-          sed -i "s|image: mdlimon/weather-app:.*|image: mdlimon/weather-app:${{ steps.datetime.outputs.tag }}|g" Deploy/2_weather_deployment.yaml
+          sed -i "s|image: mdlimon/basic-app:.*|image: mdlimon/basic-app:${{ steps.datetime.outputs.tag }}|g" Deploy/2_basic_deployment.yaml
 
       - name: Commit and push changes
         run: |
-          git add Deploy/2_weather_deployment.yaml
-          git diff --staged --quiet || git commit -m "Update weather-app image tag to ${{ steps.datetime.outputs.tag }}"
+          git add Deploy/2_basic_deployment.yaml
+          git diff --staged --quiet || git commit -m "Update basic-app image tag to ${{ steps.datetime.outputs.tag }}"
           git push https://${{ secrets.GH_USERNAME }}:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}

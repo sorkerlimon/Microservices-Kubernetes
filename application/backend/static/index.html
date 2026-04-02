@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Welcome Kubernetes</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <div id="auth-view" class="card">
+      <h1>Welcome</h1>
+      <div class="tabs">
+        <button type="button" class="tab active" data-tab="login">Login</button>
+        <button type="button" class="tab" data-tab="register">Register</button>
+      </div>
+
+      <form id="login-form" class="form">
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" id="login-password" placeholder="Password" required maxlength="72" title="Max 72 characters">
+        <span class="password-hint">Password: max 72 characters</span>
+        <button type="submit">Login</button>
+      </form>
+
+      <form id="register-form" class="form hidden">
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" id="register-password" placeholder="Password (min 6, max 72 chars)" required minlength="6" maxlength="72" title="Min 6, max 72 characters">
+        <span class="password-hint">Password: 6–72 characters</span>
+        <button type="submit">Register</button>
+      </form>
+
+      <p id="message" class="message"></p>
+    </div>
+
+    <div id="welcome-view" class="card hidden">
+      <h1 class="welcome-title">Welcome Kubernetes</h1>
+      <p class="welcome-sub">You are logged in.</p>
+      <button type="button" id="logout-btn">Logout</button>
+    </div>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
