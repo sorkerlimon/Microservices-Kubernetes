@@ -173,3 +173,18 @@ argocd app sync backend-dev
 - **Path:** deployment/development
 - **Destination:** dev-project namespace
 - **Auto-sync:** Enabled with self-heal
+
+# Restart all Argo CD deployments
+kubectl rollout restart deployment -n argocd
+
+# Or restart specific components
+kubectl rollout restart deployment/argocd-server -n argocd
+kubectl rollout restart deployment/argocd-repo-server -n argocd
+kubectl rollout restart statefulset/argocd-application-controller -n argocd
+
+# Delete and recreate the application
+kubectl delete application backend-dev -n argocd
+kubectl apply -f deployment/development/argocd-application.yaml
+
+# Or hard refresh via kubectl patch
+kubectl patch application backend-dev -n argocd --type merge -p '{"metadata":{"annotations":{"argocd.argoproj.io/refresh":"hard"}}}'
